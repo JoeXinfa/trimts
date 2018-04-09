@@ -1,5 +1,5 @@
-EZCAD
-=====
+TRIMTS
+======
 
 Trim trailing white spaces in code.
 
