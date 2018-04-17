@@ -6,9 +6,7 @@ Remove trailing white spaces in code.
 
 import os
 import argparse
-from qtpy.QtCore import Qt
-from qtpy.QtWidgets import QPushButton, QHBoxLayout, QVBoxLayout
-from ezcad.dialogs.app_config import GeneralConfigPage
+from ezcad.widgets.ezdialog import EasyDialog
 from ezcad.config.base import _
 
 def main():
@@ -66,48 +64,33 @@ def trim_folder(path, ext=None):
                     path_name = os.path.join(p, f)
                     trim_file(path_name)
 
-class Trimmer(GeneralConfigPage):
-    CONF_SECTION = None
+class Trimmer(EasyDialog):
     NAME = _("Trim trailing spaces")
 
-    def __init__(self, parent=None, main=None):
-        GeneralConfigPage.__init__(self, parent, main)
-        #load_icons(ICON_PATH)
+    def __init__(self, parent=None):
+        EasyDialog.__init__(self, parent)
         self.setup_page()
 
     def setup_page(self):
-        self.setWindowTitle(self.NAME)
-        #self.setWindowIcon(ima.icon('hourglass'))
-        vbox = QVBoxLayout()
+        text = _("Folder")
+        self.folder = self.create_browsedir(text)
+        self.layout.addWidget(self.folder)
 
-        self.folder = self.create_browsedir(_("Folder"), "Folder")
-        vbox.addWidget(self.folder)
+        text = _("File extension")
+        self.extension = self.create_lineedit(text, default=".py")
+        self.layout.addWidget(self.extension)
 
-        self.ui_ext = self.create_lineedit(_("File extension"), "File_ext",
-                                           alignment=Qt.Horizontal)
-        self.ui_ext.textbox.setText(".py")
-        vbox.addWidget(self.ui_ext)
+        text = _("File")
+        self.file = self.create_browsefile(text)
+        self.layout.addWidget(self.file)
 
-        self.file = self.create_browsefile(_("File"), "File")
-        vbox.addWidget(self.file)
-
-        btn_apply = QPushButton(_('Apply'))
-        btn_apply.clicked.connect(self.apply)
-        btn_close = QPushButton(_('Close'))
-        btn_close.clicked.connect(self.close)
-
-        hbox = QHBoxLayout()
-        hbox.addStretch()
-        hbox.addWidget(btn_apply)
-        hbox.addWidget(btn_close)
-        vbox.addLayout(hbox)
-
-        self.setLayout(vbox)
+        action = self.create_action()
+        self.layout.addWidget(action)
 
     def apply(self):
-        path = self.folder.lineedit.textbox.text()
-        ext = self.ui_ext.textbox.text()
-        file = self.file.lineedit.textbox.text()
+        path = self.folder.lineedit.edit.text()
+        ext = self.extension.edit.text()
+        file = self.file.lineedit.edit.text()
         trim(path, ext, file)
 
 if __name__ == '__main__':
