@@ -35,9 +35,9 @@ def main():
         trim(path, ext, file)
 
 def trim(path, ext, file):
-    if path is not None:
+    if path: # path is not None or empty
         trim_folder(path, ext=ext)
-    if file is not None:
+    if file: # file is not None or empty
         trim_file(file)
 
 def trim_file(file):
