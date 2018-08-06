@@ -14,7 +14,7 @@ def main():
                         "Remove trailing white spaces in code.")
     parser.add_argument("-p", "--path", type=str, default=None,
                         help="path of the folder to trim")
-    parser.add_argument("-f", "--file", type=str, default=None,
+    parser.add_argument("-f", "--files", nargs="+", type=str, default=None,
                         help="filename of the file to trim")
     parser.add_argument("-t", "--ext", type=str, default='.py',
                         help="extension for the file type")
@@ -31,8 +31,9 @@ def main():
     else:
         path = args.path
         ext = args.ext
-        file = args.file
-        trim(path, ext, file)
+        files = args.files
+        for file in files:
+            trim(path, ext, file)
 
 def trim(path, ext, file):
     if path: # path is not None or empty
