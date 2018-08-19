@@ -6,6 +6,9 @@ Remove trailing white spaces in code.
 
 import os
 import argparse
+import sys
+if sys.platform.lower().startswith('win'):
+    sys.path.append("C:/Users/zhuu/Desktop/code/ezcad")
 from ezcad.widgets.ezdialog import EasyDialog
 from ezcad.config.base import _
 
