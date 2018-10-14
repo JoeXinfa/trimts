@@ -9,8 +9,7 @@ import argparse
 import sys
 if sys.platform.lower().startswith('win'):
     sys.path.append("C:/Users/zhuu/Desktop/code/ezcad")
-from ezcad.widgets.ezdialog import EasyDialog
-from ezcad.config.base import _
+
 
 def main():
     parser = argparse.ArgumentParser(description=
@@ -28,7 +27,9 @@ def main():
         print('Launching GUI...')
         from qtpy.QtWidgets import QApplication
         app = QApplication([])
+        from .trimmer import Trimmer
         test = Trimmer()
+        test.sigRun.connect(trim)
         test.show()
         app.exec_()
     else:
@@ -38,11 +39,13 @@ def main():
         for file in files:
             trim(path, ext, file)
 
+
 def trim(path, ext, file):
     if path: # path is not None or empty
         trim_folder(path, ext=ext)
     if file: # file is not None or empty
         trim_file(file)
+
 
 def trim_file(file):
     """
@@ -53,6 +56,7 @@ def trim_file(file):
         new = [line.rstrip() for line in fh]
     with open(file, 'w', encoding='utf-8') as fh:
         fh.writelines((line+'\n' for line in new))
+
 
 def trim_folder(path, ext=None):
     """
@@ -68,34 +72,6 @@ def trim_folder(path, ext=None):
                     path_name = os.path.join(p, f)
                     trim_file(path_name)
 
-class Trimmer(EasyDialog):
-    NAME = _("Trim trailing spaces")
-
-    def __init__(self, parent=None):
-        EasyDialog.__init__(self, parent)
-        self.setup_page()
-
-    def setup_page(self):
-        text = _("Folder")
-        self.folder = self.create_browsedir(text)
-        self.layout.addWidget(self.folder)
-
-        text = _("File extension")
-        self.extension = self.create_lineedit(text, default=".py")
-        self.layout.addWidget(self.extension)
-
-        text = _("File")
-        self.file = self.create_browsefile(text)
-        self.layout.addWidget(self.file)
-
-        action = self.create_action()
-        self.layout.addWidget(action)
-
-    def apply(self):
-        path = self.folder.lineedit.edit.text()
-        ext = self.extension.edit.text()
-        file = self.file.lineedit.edit.text()
-        trim(path, ext, file)
 
 if __name__ == '__main__':
     main()
